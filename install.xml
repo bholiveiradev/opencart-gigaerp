@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>Giga E-commerce API para OpenCart</name>
+  <code>giga-ecommerce-oc</code>
+  <version>1.0</version>
+  <author>Bruno - Gigatron Jundiaí</author>
+  <link>https://gigatronjundiai.com.br</link>
+  <file path="admin/controller/setting/setting.php">
+    <operation>
+        <search><![CDATA[
+            $this->load->model('tool/image');
+        ]]></search>
+        <add position="before"><![CDATA[
+            $data['module_gigaecommerce_status'] = false;
+            
+            if ($this->model_setting_setting->getSettingValue('module_gigaecommerce_status') == '1') {
+                
+                $data['module_gigaecommerce_status'] = true;
+                
+                if (isset($this->request->post['config_gigaecommerce_company'])) {
+                    $data['config_gigaecommerce_company'] = $this->request->post['config_gigaecommerce_company'];
+                } else {
+                    $data['config_gigaecommerce_company'] = $this->model_setting_setting->getSettingValue('config_gigaecommerce_company');
+                }
+                
+                if (isset($this->request->post['config_gigaecommerce_key'])) {
+                    $data['config_gigaecommerce_key'] = $this->request->post['config_gigaecommerce_key'];
+                } else {
+                    $data['config_gigaecommerce_key'] = $this->model_setting_setting->getSettingValue('config_gigaecommerce_key');
+                }
+                
+                if (isset($this->request->post['config_gigaecommerce_type_host'])) {
+                    $data['config_gigaecommerce_type_host'] = $this->request->post['config_gigaecommerce_type_host'];
+                } else {
+                    $data['config_gigaecommerce_type_host'] = $this->model_setting_setting->getSettingValue('config_gigaecommerce_type_host');
+                }
+                
+                if (isset($this->request->post['config_gigaecommerce_protocol'])) {
+                    $data['config_gigaecommerce_protocol'] = $this->request->post['config_gigaecommerce_protocol'];
+                } else {
+                    $data['config_gigaecommerce_protocol'] = $this->model_setting_setting->getSettingValue('config_gigaecommerce_protocol');
+                }
+                
+                if (isset($this->request->post['config_gigaecommerce_url'])) {
+                    $data['config_gigaecommerce_url'] = $this->request->post['config_gigaecommerce_url'];
+                } else {
+                    $data['config_gigaecommerce_url'] = $this->model_setting_setting->getSettingValue('config_gigaecommerce_url');
+                }
+                
+                if (isset($this->request->post['config_gigaecommerce_port'])) {
+                    $data['config_gigaecommerce_port'] = $this->request->post['config_gigaecommerce_port'];
+                } else {
+                    $data['config_gigaecommerce_port'] = $this->model_setting_setting->getSettingValue('config_gigaecommerce_port');
+                }
+            }
+        ]]></add>
+    </operation>
+  </file>
+  
+  <file path="admin/view/template/setting/setting.twig">
+    <operation>
+        <search><![CDATA[
+            <li><a href="#tab-server" data-toggle="tab">{{ tab_server }}</a></li>
+        ]]></search>
+        <add position="after"><![CDATA[
+            {% if module_gigaecommerce_status %}
+                <li><a href="#tab-gigaecommerce" data-toggle="tab">Giga E-commerce API</a></li>
+            {% endif %}
+        ]]></add>
+    </operation>
+    <operation>
+        <search><![CDATA[
+            <div class="tab-content">
+        ]]></search>
+        <add position="after"><![CDATA[
+            {% if module_gigaecommerce_status %}
+                <div class="tab-pane" id="tab-gigaecommerce">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="gigaecommerce-company"><span data-toggle="tooltip" title="" data-original-title="Código da empresa no GigaERP.">Código da Empresa</span></label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="gigaecommerce-company" type="text" name="config_gigaecommerce_company" placeholder="Código da Empresa" value="{{ config_gigaecommerce_company }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="gigaecomerce_key"><span data-toggle="tooltip" title="" data-original-title="A chave é gerada na instalação da API e encontra-se no arquivo '.env.inc.local' na pasta config.">Chave da API</span></label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="gigaecommerce_key" type="text" name="config_gigaecommerce_key" placeholder="Chave da API" value="{{ config_gigaecommerce_key }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="gigaecomerce_type_host"><span data-toggle="tooltip" title="" data-original-title="Informar se é IP ou Domínio.">Tipo do host</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="gigaecomerce_type_host" name="config_gigaecommerce_type_host">
+                            {% if  config_gigaecommerce_type_host == 'IP' %}
+                                <option value="IP" selected>IP</option>
+                                <option value="DNS">Domínio</option>
+                            {% else %}
+                                <option value="IP">IP</option>
+                                <option value="DNS" selected>Domínio</option>
+                            {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="gigaecomerce_protocol"><span data-toggle="tooltip" title="" data-original-title="Informar se http ou https.">Protocolo</span></label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="gigaecomerce_protocol" name="config_gigaecommerce_protocol">
+                            {% if  config_gigaecommerce_protocol == 'http' %}
+                                <option value="http" selected>http</option>
+                                <option value="https">https</option>
+                            {% else %}
+                                <option value="http" selected>http</option>
+                                <option value="https" selected>https</option>
+                            {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="gigaecomerce-url"><span data-toggle="tooltip" title="" data-original-title="URL pública do serviço. (Ex: 127.0.0.1).">URL pública</span></label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="gigaecommerce-url" type="text" name="config_gigaecommerce_url" placeholder="URL pública" value="{{ config_gigaecommerce_url }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label" for="gigaecomerce_port"><span data-toggle="tooltip" title="" data-original-title="Porta utilizada pela API. (Ex: 8084)">Porta</span></label>
+                        <div class="col-sm-10">
+                            <input class="form-control" id="gigaecommerce_port" type="text" name="config_gigaecommerce_port" placeholder="Porta" value="{{ config_gigaecommerce_port }}" />
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        ]]></add>
+    </operation>
+  </file>
+  
+  <file path="admin/controller/catalog/product.php">
+      <operation>
+          <search><![CDATA[
+            $this->response->setOutput($this->load->view('catalog/product_list', $data));
+          ]]></search>
+          <add position="before">
+            $this->load->model('setting/setting');
+            
+            $data['module_gigaecommerce_status'] = false;
+            
+            if ($this->model_setting_setting->getSettingValue('module_gigaecommerce_status') == '1') {
+                $data['module_gigaecommerce_status'] = true;
+                $data['button_sync'] = 'Sincronizar com GigaERP';
+            }
+          </add>
+      </operation>
+  </file>
+  
+  <file path="admin/view/template/catalog/product_list.twig">
+    <operation>
+        <search><![CDATA[
+            <a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary">
+        ]]></search>
+        <add position="before"><![CDATA[
+            {% if module_gigaecommerce_status %}
+                <button type="button" id="button-sync" data-toggle="tooltip" title="{{ button_sync }}" class="btn btn-warning"><i class="fa fa-refresh"></i></button>
+            {% endif %}
+        ]]></add>
+    </operation>
+    <operation>
+        <search><![CDATA[
+            {{ footer }}
+        ]]></search>
+        <add position="before"><![CDATA[
+            <script type="text/javascript">
+                $('#button-sync').on('click', function() {
+                    $.ajax({
+                        url: 'index.php?route=extension/module/gigaecommerce/product&user_token={{ user_token }}',
+                        type: 'post',
+                        dataType: 'json',
+                        cache: false,
+                        beforeSend: function() {
+                            $('#button-sync').html('<i class="fa fa-refresh fa-spin"></i> Sincronizando...').attr('disabled', 'true');
+                        },
+                        complete: function() {
+                            $('#button-sync').html('<i class="fa fa-refresh"></i>').removeAttr('disabled');
+                        },
+                        success: function(json) {
+                            if (json['warning']) {
+                                alert(json['warning']);
+                            } else {
+                                alert(json['success']);
+                                location.reload();
+                            }
+                            console.log(json);
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert(thrownError);
+                        }
+                    });
+                });
+            </script>
+        ]]></add>
+    </operation>
+  </file>
+  
+  <file path="admin/controller/sale/order.php">
+      <operation>
+          <search><![CDATA[
+            $this->response->setOutput($this->load->view('sale/order_list', $data));
+          ]]></search>
+          <add position="before">
+            $this->load->model('setting/setting');
+            
+            $data['module_gigaecommerce_status'] = false;
+            
+            if ($this->model_setting_setting->getSettingValue('module_gigaecommerce_status') == '1') {
+                $data['module_gigaecommerce_status'] = true;
+                $data['button_sync'] = 'Sincronizar com GigaERP';
+            }
+          </add>
+      </operation>
+  </file>
+  
+  <file path="admin/view/template/sale/order_list.twig">
+    <operation>
+        <search><![CDATA[
+            <a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary">
+        ]]></search>
+        <add position="before"><![CDATA[
+            {% if module_gigaecommerce_status %}
+                <button type="button" id="button-sync" data-toggle="tooltip" title="{{ button_sync }}" class="btn btn-warning"><i class="fa fa-refresh"></i></button>
+            {% endif %}
+        ]]></add>
+    </operation>
+    <operation>
+        <search><![CDATA[
+            {{ footer }}
+        ]]></search>
+        <add position="before"><![CDATA[
+            <script type="text/javascript">
+                $('#button-sync').on('click', function() {
+                    $.ajax({
+                        url: 'index.php?route=extension/module/gigaecommerce/order&user_token={{ user_token }}',
+                        type: 'post',
+                        dataType: 'json',
+                        cache: false,
+                        beforeSend: function() {
+                            $('#button-sync').html('<i class="fa fa-refresh fa-spin"></i> Sincronizando...').attr('disabled', 'true');
+                        },
+                        complete: function() {
+                            $('#button-sync').html('<i class="fa fa-refresh"></i>').removeAttr('disabled');
+                        },
+                        success: function(json) {
+                            if (json['warning']) {
+                                alert(json['warning']);
+                            } else {
+                                alert(json['success']);
+                                location.reload();
+                            }
+                            console.log(json);
+                        },
+                        error: function(xhr, ajaxOptions, thrownError) {
+                            alert(thrownError);
+                        }
+                    });
+                });
+            </script>
+        ]]></add>
+    </operation>
+  </file>
+  
+</modification>
